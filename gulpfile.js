@@ -6,6 +6,7 @@ var browserify = require('browserify');
 var babelify = require('babelify'); 
 var source = require('vinyl-source-stream');
 var streamify = require('gulp-streamify');
+var connect = require('gulp-connect');
 
 gulp.task('build', function () {
     var b = browserify({
@@ -17,3 +18,17 @@ gulp.task('build', function () {
             .pipe(streamify(uglify()))
             .pipe(gulp.dest('./build/'));
 });
+
+gulp.task('watch', function () {
+    gulp.watch('./src/*.jsx', ['build']);
+});
+
+gulp.task('connect', function () {
+    connect.server({
+        root: './',
+        livereload: true,
+        port: 3000
+    });
+});
+
+gulp.task('dev', ['connect', 'watch']);

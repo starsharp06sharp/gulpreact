@@ -3,16 +3,19 @@
 var gulp = require('gulp');
 var uglify = require("gulp-uglify");
 var browserify = require('browserify');
-var babelify = require('babelify'); 
+var tsify = require("tsify");
 var source = require('vinyl-source-stream');
 var streamify = require('gulp-streamify');
 var connect = require('gulp-connect');
 
 gulp.task('build', function () {
-    var b = browserify({
-        entries: './src/app.jsx',
-        transform: [babelify.configure({ presets: ['react', 'es2015'] })]
-    });
+    var b = browserify()
+                .add(['./src/app.tsx', './typings/index.d.ts'])
+                .plugin('tsify', {
+                    module: "commonjs",
+                    target: "es5",
+                    jsx: "react"
+                });
     return b.bundle()
             .pipe(source('app.js'))
             .pipe(streamify(uglify()))
@@ -20,7 +23,7 @@ gulp.task('build', function () {
 });
 
 gulp.task('watch', function () {
-    gulp.watch('./src/*.jsx', ['build']);
+    gulp.watch('./src/*.tsx', ['build']);
 });
 
 gulp.task('connect', function () {

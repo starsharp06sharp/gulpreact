@@ -7,6 +7,7 @@
 ```
 npm install -g gulp typings
 npm install
+typings install
 gulp dev
 ```
 
